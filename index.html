@@ -12,12 +12,24 @@
         <div class = "left-side">
             <div class = "players">
                 <h2>Enter names below:</h2>
-                <p>Player 1:</p><input type="text">
-                <p>Player 2:</p><input type="text">
+                <div class="input-area">
+                    <div class="player-info">
+                        <div>
+                            <p>Player 1:</p><input type="text" id="player-one">
+                        </div>
+                        <div>
+                            <p>Player 2:</p><input type="text" id="player-two">
+                        </div>
+                    </div>
+                    <div class="game-buttons">
+                        <button id = "start">Start Game</button>
+                        <button id = "reset">Reset Game</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class = "right-side">
-            <div class="result">
+            <div class="game-result">
 
             </div>
             <div id="game-container">
@@ -31,7 +43,7 @@
                 <div id="7" class="square"></div>
                 <div id="8" class="square"></div>
             </div>
-            <div class = "turn">
+            <div class = "turn-result">
 
             </div>
         </div>

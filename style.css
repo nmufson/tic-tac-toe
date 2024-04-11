@@ -15,14 +15,83 @@ body {
 }
 
 .players {
+    width: 90%;
     align-self: center;
+    justify-self: end;
+    border: 2px black solid;
+    display: grid;
+    grid-template-rows: 1fr 2fr;
+    background-color: #fab05c;
+
+}
+
+.players * p {
+    font-weight: bold;
+    padding-left: 1%;
+    margin-bottom: 1%;
+    white-space: nowrap;
+}
+
+.players > h2 {
+    font-size: 2em;
+    padding: 0px 0px 0px 0px;
     justify-self: center;
 }
 
+.player-info {
+    margin-left: 4%;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-self: center
+}
+
+.game-buttons {
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 20%;
+}
+
+button {
+    width: 100%;
+    height: 25px;
+
+    whie-space: nowrap;
+} 
+
+.game-buttons > :first-child {
+    margin-bottom: 20%;
+}
+
+
+
 .right-side {
     display: grid;
-    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-content: center;
 }
+
+.game-result {
+    align-self: end;
+    justify-self: center;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.turn-result {
+    align-self: start;
+    justify-self: center;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+
 
 #game-container {
     display: grid;

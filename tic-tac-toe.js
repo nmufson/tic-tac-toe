@@ -40,13 +40,13 @@ function cell() {
 //conrol flow of the game 
 function gameController(
     playerOneName = "Player One", 
-    PlayerTwoName = "Player Two"
+    playerTwoName = "Player Two"
     ) {
     const board = gameBoard();
     
     const players = [
         {name: playerOneName, mark: 1},
-        {name: PlayerTwoName, mark: 2}
+        {name: playerTwoName, mark: 2}
     ];
 
     let activePlayer = players[0];
@@ -56,7 +56,10 @@ function gameController(
             activePlayer = players[1]
         } else {
             activePlayer = players[0]
+            console.log(activePlayer)
         };
+        turnMessageP.textContent += ` ${activePlayer.name}'s turn.`;
+
     }
     const getActivePlayer = () => activePlayer;
 
@@ -68,42 +71,114 @@ function gameController(
     }
     let hasWinner = false;
     let marked = false;
-    const playRound = (square) => {
-        
-        if (!(board.getBoard()[square].getValue() === 0)) {
-            console.log(`Square has already been marked`);
-            marked = true;
-        } else {
-            
-            console.log(`${getActivePlayer.name} marks sqaure ${square}`);
-            board.chooseMark(square,getActivePlayer().mark);
-            
-            
-            //check for winner and display win message 
-            const boardValues = board.getBoard().map((cell) => cell.getValue());
-            
-            const winningConditions = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8],
-                [0, 3, 6], [1, 4, 7], [2, 5, 8],
-                [0, 4, 8], [2, 4, 6]
-            ];
-            
-                hasWinner = winningConditions.some(array => {
-                    return (array.every(index => boardValues[index] === 1) ||
-                        array.every(index => boardValues[index] === 2))
-                })
-                
-                if (hasWinner) {
-                        board.printBoard();
-                        console.log(`${getActivePlayer().name} wins!`);
-                        startGame.game.hasWinner = true;
-                        return;
-                    };
+    let gameStarted =false;
 
-            //switch player turn
-            
-            switchPlayerTurn();
-            printNewRound();
+    const turnMessageDiv = document.querySelector('.turn-result');
+    const turnMessageP = document.createElement('p');
+    turnMessageDiv.appendChild(turnMessageP);
+    const gameResultDiv = document.querySelector('.game-result');
+    const gameResultMessage = document.createElement('p');
+    gameResultDiv.appendChild(gameResultMessage);
+
+    const playerOneInput = document.querySelector('#player-one');
+    const playerTwoInput = document.querySelector('#player-two');
+
+    const startGame = () => {
+        
+
+        if ((playerOneInput.value === '') || (playerTwoInput.value === '')) {
+            gameStarted = false;
+            turnMessageP.textContent = '';
+        } else {
+            gameStarted = true;
+        
+        
+        
+            players[0].name = playerOneInput.value;
+            players[1].name = playerTwoInput.value;
+    
+            turnMessageP.textContent = `${getActivePlayer().name} starts`;
+
+            playerOneInput.value = '';
+            playerTwoInput.value = '';
+        
+        
+            startButton.removeEventListener('click', startGame);
+        }
+        
+    }
+    const startButton = document.querySelector('#start');
+    startButton.addEventListener('click', startGame);
+
+    
+
+    const resetGame = () => {
+        gameStarted = false;
+        playerOneInput.value = '';
+        playerTwoInput.value = '';
+
+        const boardArray = board.getBoard()
+
+        boardArray.forEach((element) => {
+            element.addMark(0)
+        })
+
+        const marksList = document.querySelectorAll('.mark')
+
+        marksList.forEach((mark) => {
+            mark.parentNode.removeChild(mark);
+        })
+
+        turnMessageP.textContent = 'Game reset'
+        gameResultMessage.textContent = '';
+
+        startButton.addEventListener('click', startGame);
+    }
+    const resetButton = document.querySelector('#reset');
+    resetButton.addEventListener('click', resetGame);
+
+    
+    
+    
+    const playRound = (square) => {
+        if (gameStarted) {
+            if (!(board.getBoard()[square].getValue() === 0)) {
+                console.log(`Square has already been marked`);
+                marked = true;
+            } else {
+                turnMessageP.textContent = `${getActivePlayer().name} marks square ${square}.`;
+
+                board.chooseMark(square,getActivePlayer().mark);
+                
+                
+                //check for winner and display win message 
+                const boardValues = board.getBoard().map((cell) => cell.getValue());
+                
+                const winningConditions = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                    [0, 4, 8], [2, 4, 6]
+                ];
+                
+                    hasWinner = winningConditions.some(array => {
+                        return (array.every(index => boardValues[index] === 1) ||
+                            array.every(index => boardValues[index] === 2))
+                    })
+                    
+                    if (hasWinner) {
+                            board.printBoard();
+                            console.log(`${getActivePlayer().name} wins!`);
+                            gameResultMessage.textContent = `${getActivePlayer().name} wins!`;
+                            userClick.game.hasWinner = true;
+                            
+                            return;
+                        };
+
+                //switch player turn
+                
+                switchPlayerTurn();
+                printNewRound();
+            }
         }
     }
     //initial play game message 
@@ -119,11 +194,13 @@ function gameController(
 function userControls() {
     const squareList = document.querySelectorAll('.square');
     let squareId;
-
     const game = gameController();
-    const board = gameBoard();
-
     
+    const resetButton = document.querySelector('#reset');
+    resetButton.addEventListener('click', () => {
+        game.hasWinner = false;
+    });
+
     
     //brinch this function definition out of the forEach
     const clickSquare = (square) => {
@@ -154,13 +231,13 @@ function userControls() {
 
         if (boardValues[square.id] === 1) {
             const xMark = document.createElement('p');
-            xMark.classList.add('xMark');
+            xMark.classList.add('mark','xMark');
             xMark.textContent = 'X';
             squareDiv.appendChild(xMark);
         }
         if (boardValues[square.id] === 2) {
             const oMark = document.createElement('p');
-            oMark.classList.add('oMark');
+            oMark.classList.add('mark','oMark');
             oMark.textContent = 'O';
             squareDiv.appendChild(oMark);
         }
@@ -168,6 +245,10 @@ function userControls() {
     squareList.forEach((square) => {
             square.addEventListener('click', () => clickSquare(square))  
     })  
+
+    
+
+
 
         
     
@@ -177,8 +258,10 @@ function userControls() {
     return {squareList,clickSquare,game}
 }
 
-const startGame = userControls();
+
+
+const userClick = userControls();
 const board = gameBoard();
-const controller = gameController();
+
 
 
